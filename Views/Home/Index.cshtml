@@ -4,5 +4,45 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="api-documentation">
+    <h2>API Documentation</h2>
+    
+    <h3>User API</h3>
+    <ul>
+        <li><strong>GET /api/User/AllUsers</strong>: Retrieves all users.</li>
+        <li><strong>GET /api/User/GetUserById?id={id}</strong>: Retrieves a user by ID.</li>
+        <li><strong>POST /api/User/InsertUser</strong>: Inserts a new user. <em>Body: User</em></li>
+        <li><strong>PUT /api/User/UpdateUser</strong>: Updates an existing user. <em>Body: User</em></li>
+        <li><strong>DELETE /api/User/DeleteUser?id={id}</strong>: Deletes a user by ID.</li>
+    </ul>
+
+    <h3>Event API</h3>
+    <ul>
+        <li><strong>GET /api/Event/AllEvents</strong>: Retrieves all events.</li>
+        <li><strong>GET /api/Event/GetEventById?id={id}</strong>: Retrieves an event by ID.</li>
+        <li><strong>POST /api/Event/InsertEvent</strong>: Inserts a new event. <em>Body: Event</em></li>
+        <li><strong>PUT /api/Event/UpdateEvent</strong>: Updates an existing event. <em>Body: Event</em></li>
+        <li><strong>DELETE /api/Event/DeleteEvent?id={id}</strong>: Deletes an event by ID.</li>
+    </ul>
+
+    <h3>Registration API</h3>
+    <ul>
+        <li><strong>GET /api/Registration/AllRegistrations</strong>: Retrieves all registrations.</li>
+        <li><strong>GET /api/Registration/GetRegistrationById?id={id}</strong>: Retrieves a registration by ID.</li>
+        <li><strong>POST /api/Registration/InsertRegistration</strong>: Inserts a new registration. <em>Body: Registration</em></li>
+        <li><strong>PUT /api/Registration/UpdateRegistration</strong>: Updates an existing registration. <em>Body: Registration</em></li>
+        <li><strong>DELETE /api/Registration/DeleteRegistration?id={id}</strong>: Deletes a registration by ID.</li>
+    </ul>
+
+    <h3>Ticket API</h3>
+    <ul>
+        <li><strong>GET /api/Ticket/AllTickets</strong>: Retrieves all tickets.</li>
+        <li><strong>GET /api/Ticket/GetTicketById?id={id}</strong>: Retrieves a ticket by ID.</li>
+        <li><strong>POST /api/Ticket/InsertTicket</strong>: Inserts a new ticket. <em>Body: Ticket</em></li>
+        <li><strong>PUT /api/Ticket/UpdateTicket</strong>: Updates an existing ticket. <em>Body: Ticket</em></li>
+        <li><strong>DELETE /api/Ticket/DeleteTicket?id={id}</strong>: Deletes a ticket by ID.</li>
+        <li><strong>GET /api/Ticket/GetTicketsByEventId?id={id}</strong>: Retrieves tickets by event ID.</li>
+    </ul>
 </div>
