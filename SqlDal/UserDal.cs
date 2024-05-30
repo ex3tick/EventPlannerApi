@@ -39,7 +39,20 @@ namespace EventPlanner.SqlDal
             {
                 using (MySqlConnection connection = new MySqlConnection(_con))
                 {
-                    string sql = "SELECT * FROM users";
+                    string sql = @"
+                SELECT 
+                    id,
+                    firstname,
+                    lastname,
+                    email,
+                    CAST(wantAlert AS UNSIGNED) AS WantAlert,
+                    password,
+                    salt,
+                    CAST(isPlaner AS UNSIGNED) AS IsPlanner,
+                    createdAt,
+                    updatedAt 
+                FROM users";
+                
                     var users = await connection.QueryAsync<User>(sql);
                     return users.ToList();
                 }
@@ -50,6 +63,7 @@ namespace EventPlanner.SqlDal
                 throw;
             }
         }
+
 
         public async Task<bool> DeleteUser(int id)
         {
@@ -107,13 +121,29 @@ namespace EventPlanner.SqlDal
                 using (MySqlConnection connection = new MySqlConnection(_con))
                 {
                     string sql = @"
-                    INSERT INTO users 
-                    (firstname, lastname, email, wantAlert, password, salt, isPlaner, createdAt, updatedAt) 
-                    VALUES 
-                    (@FirstName, @LastName, @Email, @WantAlert, @Password, @Salt, @IsPlanner, @CreatedAt, @UpdatedAt);
-                    SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
+            INSERT INTO users 
+            (firstname, lastname, email, wantAlert, password, salt, isPlaner, createdAt, updatedAt) 
+            VALUES 
+            (@FirstName, @LastName, @Email, @WantAlert, @Password, @Salt, @IsPlanner, @CreatedAt, @UpdatedAt);
+            SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
 
-                    int id = await connection.QuerySingleAsync<int>(sql, user); // Execute the query and get the ID
+                    user.CreatedAt = DateTime.Now;
+                    user.UpdatedAt = DateTime.Now;
+
+                    var parameters = new
+                    {
+                        user.FirstName,
+                        user.LastName,
+                        Email = user.Email,
+                        user.WantAlert,
+                        user.Password,
+                        user.Salt,
+                        IsPlanner = user.IsPlanner ? 1 : 0, // Convert bool to int
+                        user.CreatedAt,
+                        user.UpdatedAt
+                    };
+
+                    int id = await connection.QuerySingleAsync<int>(sql, parameters); 
                     return id;
                 }
             }
@@ -123,6 +153,7 @@ namespace EventPlanner.SqlDal
                 return 0;
             }
         }
+
 
         public async Task<bool> emailExists(string email)
         {
@@ -148,8 +179,22 @@ namespace EventPlanner.SqlDal
             {
                 using (MySqlConnection connection = new MySqlConnection(_con))
                 {
-                    string sql = "SELECT * FROM users WHERE email = @Email";
-                    User user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { email = email });
+                    string sql = @"
+                SELECT 
+                    id,
+                    firstname,
+                    lastname,
+                    email,
+                    CAST(wantAlert AS UNSIGNED) AS WantAlert,
+                    password,
+                    salt,
+                    CAST(isPlaner AS UNSIGNED) AS IsPlanner,
+                    createdAt,
+                    updatedAt 
+                FROM users 
+                WHERE email = @Email";
+                
+                    User user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { Email = email });
                     return user;
                 }
             }
@@ -158,8 +203,7 @@ namespace EventPlanner.SqlDal
                 Console.WriteLine(e);
                 return null;
             }
-
-
         }
+
     }
 }

@@ -114,7 +114,7 @@ public class
     public async Task<IActionResult> InsertEvent([FromBody] Event events)
     {
         var id = await _eventServices.InsertEvent(events);
-        return Json(id);
+        return Ok(id);
     }
 
     [HttpPut]

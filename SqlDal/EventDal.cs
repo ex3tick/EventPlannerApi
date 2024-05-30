@@ -97,9 +97,9 @@ public class EventDal : IEvent
                 string sql = @"
                 INSERT INTO events (eventName, ort, datum, infos, idPlaner) 
                 VALUES (@eventName, @ort, @datum, @infos, @idPlaner);
-                SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
+                SELECT LAST_INSERT_ID();"; 
 
-                int id = await connection.QuerySingleAsync<int>(sql, events); // Execute the query and get the ID
+                int id = await connection.QuerySingleAsync<int>(sql, events); 
                 return id;
             }
         }
