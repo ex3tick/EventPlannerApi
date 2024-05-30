@@ -37,85 +37,92 @@ public class
     #region UserRest
     [HttpGet]
     [Route("/api/User/AllUsers")]
-    public IActionResult GetAllUsers()
+    public async Task<IActionResult> GetAllUsers()
     {
-        var users = _userServices.GetAllUsers();
+        var users = await _userServices.GetAllUsers();
         return Json(users);
     }
-     [HttpGet]
+
+    [HttpGet]
     [Route("/api/User/GetUserById")]
-    public IActionResult GetUserById([FromQuery] int id)
+    public async Task<IActionResult> GetUserById([FromQuery] int id)
     {
-        var user = _userServices.GetUserById(id);
+        var user = await _userServices.GetUserById(id);
         return Json(user);
     }
+
     [HttpPost]
     [Route("/api/User/InsertUser")]
-    public IActionResult InsertUser([FromBody] User user)
+    public async Task<IActionResult> InsertUser([FromBody] User user)
     {
-        var id = _userServices.InsertUser(user);
+        var id = await _userServices.InsertUser(user);
         return Json(id);
     }
+
     [HttpPut]
     [Route("/api/User/UpdateUser")]
-    public IActionResult UpdateUser([FromBody] User user)
+    public async Task<IActionResult> UpdateUser([FromBody] User user)
     {
-        var result = _userServices.UpdateUser(user);
+        var result = await _userServices.UpdateUser(user);
         return Json(result);
     }
+
     [HttpDelete]
     [Route("/api/User/DeleteUser")]
-    public IActionResult DeleteUser([FromQuery] int id)
+    public async Task<IActionResult> DeleteUser([FromQuery] int id)
     {
-        var result = _userServices.DeleteUser(id);
+        var result = await _userServices.DeleteUser(id);
         return Json(result);
     }
-     
-     [HttpGet]
-     [Route("/api/User/EmailExists")]
-        public IActionResult EmailExists([FromQuery] string email)
-        {
-            var result = _userServices.emailExists(email);
-            return Json(result);
-        }
-     
+
+    [HttpGet]
+    [Route("/api/User/EmailExists")]
+    public async Task<IActionResult> EmailExists([FromQuery] string email)
+    {
+        var result = await _userServices.emailExists(email);
+        return Ok( result);
+    }
 
     #endregion
 
     #region   EventRest
     [HttpGet]
     [Route("/api/Event/AllEvents")]
-    public IActionResult GetAllEvents()
+    public async Task<IActionResult> GetAllEvents()
     {
-        var events = _eventServices.GetAllEvents();
+        var events = await _eventServices.GetAllEvents();
         return Json(events);
     }
+
     [HttpGet]
     [Route("/api/Event/GetEventById")]
-    public IActionResult GetEventById([FromQuery] int id)
+    public async Task<IActionResult> GetEventById([FromQuery] int id)
     {
-        var events = _eventServices.GetEventById(id);
+        var events = await _eventServices.GetEventById(id);
         return Json(events);
     }
+
     [HttpPost]
     [Route("/api/Event/InsertEvent")]
-    public IActionResult InsertEvent([FromBody] Event events)
+    public async Task<IActionResult> InsertEvent([FromBody] Event events)
     {
-        var id = _eventServices.InsertEvent(events);
+        var id = await _eventServices.InsertEvent(events);
         return Json(id);
     }
+
     [HttpPut]
     [Route("/api/Event/UpdateEvent")]
-    public IActionResult UpdateEvent([FromBody] Event events)
+    public async Task<IActionResult> UpdateEvent([FromBody] Event events)
     {
-        var result = _eventServices.UpdateEvent(events);
+        var result = await _eventServices.UpdateEvent(events);
         return Json(result);
     }
+
     [HttpDelete]
     [Route("/api/Event/DeleteEvent")]
-    public IActionResult DeleteEvent([FromQuery] int id)
+    public async Task<IActionResult> DeleteEvent([FromQuery] int id)
     {
-        var result = _eventServices.DeleteEvent(id);
+        var result = await _eventServices.DeleteEvent(id);
         return Json(result);
     }
 

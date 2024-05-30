@@ -2,10 +2,10 @@
 
 public interface IUsers
 {
-    User GetUserById(int id);
-    List<User> GetAllUsers();
-    bool DeleteUser(int id);
-    bool UpdateUser(User user);
-    int InsertUser(User user);
-    bool emailExists(string email);
+    Task<User> GetUserById(int id);
+    Task<List<User>> GetAllUsers();
+    Task<bool> DeleteUser(int id);
+    Task<bool> UpdateUser(User user);
+    Task<int> InsertUser(User user);
+    Task<bool> emailExists(string email);
 }

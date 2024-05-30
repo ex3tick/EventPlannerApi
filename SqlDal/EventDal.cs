@@ -1,6 +1,9 @@
 ﻿using Dapper;
 using EventPlanner.Models;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EventPlanner.SqlDal;
 
@@ -12,57 +15,53 @@ public class EventDal : IEvent
     {
         _con = con;
     }
-    
-    public Event GetEventById(int id)
+
+    public async Task<Event> GetEventById(int id)
     {
         try
         {
-                using(MySqlConnection connection = new MySqlConnection(_con))
-                {
-                    string sql = "SELECT * FROM events WHERE id = @id";
-                    Event events = connection.QueryFirstOrDefault<Event>(sql, new { id = id });
-                    return events;
-                }
+            using(MySqlConnection connection = new MySqlConnection(_con))
+            {
+                string sql = "SELECT * FROM events WHERE id = @id";
+                Event events = await connection.QueryFirstOrDefaultAsync<Event>(sql, new { id = id });
+                return events;
+            }
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
-        
     }
 
-    public List<Event> GetAllEvents()
+    public async Task<List<Event>> GetAllEvents()
     {
         try
         {
             using (MySqlConnection connection = new MySqlConnection(_con))
             {
                 string sql = "SELECT * FROM events";
-                List<Event> events = connection.Query<Event>(sql).ToList();
+                List<Event> events = (await connection.QueryAsync<Event>(sql)).ToList();
                 return events;
             }
-
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             throw;
         }
-        
     }
 
-    public bool DeleteEvent(int id)
+    public async Task<bool> DeleteEvent(int id)
     {
         try
         { 
             using (MySqlConnection connection = new MySqlConnection(_con))
             {
                 string sql = "DELETE FROM events WHERE id = @id";
-                connection.Execute(sql, new { id = id });
+                await connection.ExecuteAsync(sql, new { id = id });
                 return true;
             }
-
         }
         catch (Exception e)
         {
@@ -71,14 +70,14 @@ public class EventDal : IEvent
         }
     }
 
-    public bool UpdateEvent(Event events)
+    public async Task<bool> UpdateEvent(Event events)
     {
         try
         {
             using (MySqlConnection connection = new MySqlConnection(_con))
             {
                 string sql = "UPDATE events SET eventName = @eventName, ort = @ort, datum = @datum, infos = @infos, idPlaner = @idPlaner WHERE id = @id";
-                connection.Execute(sql, events);
+                await connection.ExecuteAsync(sql, events);
                 return true;
             }
         }
@@ -89,18 +88,18 @@ public class EventDal : IEvent
         }
     }
 
-    public int InsertEvent(Event events)
+    public async Task<int> InsertEvent(Event events)
     {
         try
         {
             using (MySqlConnection connection = new MySqlConnection(_con))
             {
                 string sql = @"
-            INSERT INTO events (eventName, ort, datum, infos, idPlaner) 
-            VALUES (@eventName, @ort, @datum, @infos, @idPlaner);
-            SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
+                INSERT INTO events (eventName, ort, datum, infos, idPlaner) 
+                VALUES (@eventName, @ort, @datum, @infos, @idPlaner);
+                SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
 
-                int id = connection.QuerySingle<int>(sql, events); // Execute the query and get the ID
+                int id = await connection.QuerySingleAsync<int>(sql, events); // Execute the query and get the ID
                 return id;
             }
         }
@@ -110,5 +109,4 @@ public class EventDal : IEvent
             throw;
         }
     }
-
 }

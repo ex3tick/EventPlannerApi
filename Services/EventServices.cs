@@ -1,38 +1,44 @@
 ﻿using EventPlanner.Models;
 using EventPlanner.SqlDal;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace EventPlanner.Services;
-
-public class EventServices
+namespace EventPlanner.Services
 {
-    private readonly IEvent _dal;
-    public EventServices(IConfiguration configuration)
+    public class EventServices
     {
-        string _con = configuration.GetConnectionString("DefaultConnection");
-        _dal = new EventDal(_con);
+        private readonly IEvent _dal;
+
+        public EventServices(IConfiguration configuration)
+        {
+            string _con = configuration.GetConnectionString("DefaultConnection");
+            _dal = new EventDal(_con);
+        }
+
+        public async Task<Event> GetEventById(int id)
+        {
+            return await _dal.GetEventById(id);
+        }
+
+        public async Task<List<Event>> GetAllEvents()
+        {
+            return await _dal.GetAllEvents();
+        }
+
+        public async Task<bool> DeleteEvent(int id)
+        {
+            return await _dal.DeleteEvent(id);
+        }
+
+        public async Task<bool> UpdateEvent(Event events)
+        {
+            return await _dal.UpdateEvent(events);
+        }
+
+        public async Task<int> InsertEvent(Event events)
+        {
+            return await _dal.InsertEvent(events);
+        }
     }
-    
-    public Event  GetEventById(int id)
-    {
-        return _dal.GetEventById(id);
-    }
-    public List<Event> GetAllEvents()
-    {
-        return _dal.GetAllEvents();
-    }
-    public  bool DeleteEvent(int id)
-    {
-        return _dal.DeleteEvent(id);
-    }
-    public bool UpdateEvent(Event events)
-    {
-        return _dal.UpdateEvent(events);
-    }
-    public int InsertEvent(Event events)
-    {
-        return _dal.InsertEvent(events);
-    }
-    
 }
-
-

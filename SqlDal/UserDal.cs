@@ -1,146 +1,145 @@
 ﻿using Dapper;
 using EventPlanner.Models;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace EventPlanner.SqlDal;
-
-public class UserDal : IUsers
+namespace EventPlanner.SqlDal
 {
-    private readonly string _con;
-    public UserDal(string con)
+    public class UserDal : IUsers
     {
-        _con = con;
-    }
-    
-    public User GetUserById(int id)
-    {
-        User user = new User();
-        try
+        private readonly string _con;
+        public UserDal(string con)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            _con = con;
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            try
             {
-                string sql = "SELECT * FROM users WHERE id = @id";
-                user = connection.QueryFirstOrDefault<User>(sql, new { id = id });
-                return user;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM users WHERE id = @id";
+                    User user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { id = id });
+                    return user;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        
-    }
 
-    public List<User> GetAllUsers()
-    {
-        try
+        public async Task<List<User>> GetAllUsers()
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = "SELECT * FROM users";
-                List<User> users = connection.Query<User>(sql).ToList();
-                return users;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM users";
+                    var users = await connection.QueryAsync<User>(sql);
+                    return users.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        
-    }
 
-    public bool DeleteUser(int id)
-    {
-        try
+        public async Task<bool> DeleteUser(int id)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql =" DELETE FROM users WHERE id = @id";
-                connection.Execute(sql, new { id = id });
-                return true;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "DELETE FROM users WHERE id = @id";
+                    await connection.ExecuteAsync(sql, new { id = id });
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return false;
-        }
-    }
 
-    public bool UpdateUser(User user)
-    {
-        try
+        public async Task<bool> UpdateUser(User user)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = @"
-                UPDATE users 
-                SET 
-                    firstname = @FirstName, 
-                    lastname = @LastName, 
-                    email = @Email, 
-                    wantAlert = @WantAlert, 
-                    password = @Password, 
-                    salt = @Salt, 
-                    isPlaner = @IsPlanner, 
-                    updatedAt = @UpdatedAt 
-                WHERE 
-                    id = @Id";                connection.Execute(sql, user);
-                return true;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = @"
+                    UPDATE users 
+                    SET 
+                        firstname = @FirstName, 
+                        lastname = @LastName, 
+                        email = @Email, 
+                        wantAlert = @WantAlert, 
+                        password = @Password, 
+                        salt = @Salt, 
+                        isPlaner = @IsPlanner, 
+                        updatedAt = @UpdatedAt 
+                    WHERE 
+                        id = @Id";
+                    await connection.ExecuteAsync(sql, user);
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return false;
-        }
-        
-    }
 
-    
-    // insert need hash password and salt before insert
-    public int InsertUser(User user)
-    {
-        try
+        // insert need hash password and salt before insert
+        public async Task<int> InsertUser(User user)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = @"
-            INSERT INTO users 
-            (firstname, lastname, email, wantAlert, password, salt, isPlaner, createdAt, updatedAt) 
-            VALUES 
-            (@FirstName, @LastName, @Email, @WantAlert, @Password, @Salt, @IsPlanner, @CreatedAt, @UpdatedAt);
-            SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = @"
+                    INSERT INTO users 
+                    (firstname, lastname, email, wantAlert, password, salt, isPlaner, createdAt, updatedAt) 
+                    VALUES 
+                    (@FirstName, @LastName, @Email, @WantAlert, @Password, @Salt, @IsPlanner, @CreatedAt, @UpdatedAt);
+                    SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
 
-                int id = connection.QuerySingle<int>(sql, user); // Execute the query and get the ID
-                return id;
+                    int id = await connection.QuerySingleAsync<int>(sql, user); // Execute the query and get the ID
+                    return id;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return 0;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return 0;
-        }
-    }
 
-    public bool emailExists(string email)
-    {
-         
-        try
+        public async Task<bool> emailExists(string email)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = "SELECT * FROM users WHERE email = @Email";
-                User user = connection.QueryFirstOrDefault<User>(sql, new { email = email });
-                return user != null;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM users WHERE email = @Email";
+                    User user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { email = email });
+                    return user != null;
+                }
             }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return false;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
         }
     }
 }
