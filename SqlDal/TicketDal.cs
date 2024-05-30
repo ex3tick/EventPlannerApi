@@ -92,9 +92,13 @@ public class TicketDal : ITicket
         {
             using (MySqlConnection connection = new MySqlConnection(_con))
             {
-                string sql = "INSERT INTO tickets (idEvents,cost,createdAt) VALUES (@IdEvents,@Cost,@CreatedAt)";
-                int result = connection.Execute(sql, ticket);
-                return result;
+                string sql = @"
+            INSERT INTO tickets (idEvents, cost, createdAt) 
+            VALUES (@IdEvents, @Cost, @CreatedAt);
+            SELECT LAST_INSERT_ID();"; 
+
+                int id = connection.QuerySingle<int>(sql, ticket); 
+                return id;
             }
         }
         catch (Exception e)

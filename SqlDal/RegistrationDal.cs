@@ -94,8 +94,12 @@ public class RegistrationDal : IRegistration
         {
             using (MySqlConnection connection = new MySqlConnection(_con))
             {
-                string sql = "INSERT INTO registrations (idEvents, idUsers, createdAt) VALUES (@idEvents, @idUsers, @createdAt); SELECT LAST_INSERT_ID();";
-                int id = connection.QueryFirstOrDefault<int>(sql, registration);
+                string sql = @"
+            INSERT INTO registrations (idEvents, idUsers, createdAt) 
+            VALUES (@idEvents, @idUsers, @createdAt);
+            SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
+
+                int id = connection.QuerySingle<int>(sql, registration); // Execute the query and get the ID
                 return id;
             }
         }
@@ -104,6 +108,6 @@ public class RegistrationDal : IRegistration
             Console.WriteLine(e);
             throw;
         }
-        
     }
+
 }

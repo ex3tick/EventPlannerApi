@@ -95,9 +95,13 @@ public class EventDal : IEvent
         {
             using (MySqlConnection connection = new MySqlConnection(_con))
             {
-                string sql = "INSERT INTO events (eventName, ort, datum, infos,idPlaner) VALUES ( @eventName, @ort, @datum, @infos, @idPlaner)";
-                int rows = connection.Execute(sql, events);
-                return rows;
+                string sql = @"
+            INSERT INTO events (eventName, ort, datum, infos, idPlaner) 
+            VALUES (@eventName, @ort, @datum, @infos, @idPlaner);
+            SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
+
+                int id = connection.QuerySingle<int>(sql, events); // Execute the query and get the ID
+                return id;
             }
         }
         catch (Exception e)
@@ -106,4 +110,5 @@ public class EventDal : IEvent
             throw;
         }
     }
+
 }

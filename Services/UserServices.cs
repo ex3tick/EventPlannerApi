@@ -35,4 +35,8 @@ public class UserServices
     {
         return _dal.InsertUser(user);
     }
+    public bool emailExists(string email)
+    {
+        return _dal.emailExists(email);
+    }
 }

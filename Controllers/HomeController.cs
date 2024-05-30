@@ -71,6 +71,13 @@ public class
         return Json(result);
     }
      
+     [HttpGet]
+     [Route("/api/User/EmailExists")]
+        public IActionResult EmailExists([FromQuery] string email)
+        {
+            var result = _userServices.emailExists(email);
+            return Json(result);
+        }
      
 
     #endregion

@@ -108,12 +108,14 @@ public class UserDal : IUsers
             using (MySqlConnection connection = new MySqlConnection(_con))
             {
                 string sql = @"
-                INSERT INTO users 
-                (firstname, lastname, email, wantAlert, password, salt, isPlaner, createdAt, updatedAt) 
-                VALUES 
-                (@FirstName, @LastName, @Email, @WantAlert, @Password, @Salt, @IsPlanner, @CreatedAt, @UpdatedAt)";
-                int rows = connection.Execute(sql, user);
-                return rows;
+            INSERT INTO users 
+            (firstname, lastname, email, wantAlert, password, salt, isPlaner, createdAt, updatedAt) 
+            VALUES 
+            (@FirstName, @LastName, @Email, @WantAlert, @Password, @Salt, @IsPlanner, @CreatedAt, @UpdatedAt);
+            SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
+
+                int id = connection.QuerySingle<int>(sql, user); // Execute the query and get the ID
+                return id;
             }
         }
         catch (Exception e)
