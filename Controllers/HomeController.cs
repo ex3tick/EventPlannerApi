@@ -82,6 +82,13 @@ public class
         var result = await _userServices.emailExists(email);
         return Ok( result);
     }
+    [HttpGet]
+    [Route("/api/User/GetUserByEmail")]
+    public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+    {
+        var user = await _userServices.GetUserByEmail(email);
+        return Json(user);
+    }
 
     #endregion
 
@@ -125,7 +132,7 @@ public class
         var result = await _eventServices.DeleteEvent(id);
         return Json(result);
     }
-
+    
     #endregion
     
     #region RegistrationRest

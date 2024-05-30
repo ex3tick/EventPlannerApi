@@ -8,4 +8,5 @@ public interface IUsers
     Task<bool> UpdateUser(User user);
     Task<int> InsertUser(User user);
     Task<bool> emailExists(string email);
+    Task<User> GetUserByEmail(string email);
 }

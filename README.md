@@ -18,6 +18,7 @@ This is an event management system built with ASP.NET Core. It provides APIs to 
 - **PUT /api/User/UpdateUser**: Updates an existing user. *Body: User*
 - **DELETE /api/User/DeleteUser?id={id}**: Deletes a user by ID.
 - **GET /api/User/EmailExists?email={email}**: Checks if an email exists in the database.
+- **Get /api/User/GetUserByEmail?email={email}**: Retrieves a user by email.
 
 ### Event API
 - **GET /api/Event/AllEvents**: Retrieves all events.

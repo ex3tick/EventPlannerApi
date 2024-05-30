@@ -141,5 +141,25 @@ namespace EventPlanner.SqlDal
                 return false;
             }
         }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM users WHERE email = @Email";
+                    User user = await connection.QueryFirstOrDefaultAsync<User>(sql, new { email = email });
+                    return user;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+
+
+        }
     }
 }

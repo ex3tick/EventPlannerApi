@@ -45,5 +45,9 @@ namespace EventPlanner.Services
         {
             return await _dal.emailExists(email);
         }
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _dal.GetUserByEmail(email);
+        }
     }
 }
