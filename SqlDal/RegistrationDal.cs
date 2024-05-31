@@ -1,113 +1,113 @@
 ﻿using Dapper;
 using EventPlanner.Models;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 
-namespace EventPlanner.SqlDal;
+namespace EventPlanner.SqlDal
+{
+    public class RegistrationDal : IRegistration
+    {
+        private readonly string _con;
 
-public class RegistrationDal : IRegistration
-{ 
-    private readonly string _con;
-    public RegistrationDal(string con)
-    {
-        _con = con;
-    }
-    
-    
-    public Registration GetRegistrationById(int id)
-    {
-        try
+        public RegistrationDal(string con)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            _con = con;
+        }
+
+        public async Task<Registration> GetRegistrationById(int id)
+        {
+            try
             {
-                string sql  = "SELECT * FROM registrations WHERE id = @id";
-                Registration registration = connection.QueryFirstOrDefault<Registration>(sql, new { id = id });
-                return registration;
+                using (IDbConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM registrations WHERE id = @id";
+                    Registration registration = await connection.QueryFirstOrDefaultAsync<Registration>(sql, new { id = id });
+                    return registration;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
-    public List<Registration> GetAllRegistrations()
-    {
-        try
+        public async Task<List<Registration>> GetAllRegistrations()
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = "SELECT * FROM registrations";
-                List<Registration> registrations = connection.Query<Registration>(sql).ToList();
-                return registrations;
+                using (IDbConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM registrations";
+                    var registrations = await connection.QueryAsync<Registration>(sql);
+                    return registrations.ToList();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        
-    }
 
-    public bool DeleteRegistration(int id)
-    {
-        try
+        public async Task<bool> DeleteRegistration(int id)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = "DELETE FROM registrations WHERE id = @id";
-                int result = connection.Execute(sql, new { id = id });
-                return result > 0;
+                using (IDbConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "DELETE FROM registrations WHERE id = @id";
+                    int result = await connection.ExecuteAsync(sql, new { id = id });
+                    return result > 0;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        
-    }
 
-    public bool UpdateRegistration(Registration registration)
-    {
-        try
+        public async Task<bool> UpdateRegistration(Registration registration)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = "UPDATE registrations SET idEvents = @idEvents, idUsers = @idUsers , createdAt = @createdAt   WHERE id = @id";
-                int result = connection.Execute(sql, registration);
-                return result > 0;
+                using (IDbConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "UPDATE registrations SET idEvents = @idEvents, idUsers = @idUsers, createdAt = @createdAt WHERE id = @id";
+                    int result = await connection.ExecuteAsync(sql, registration);
+                    return result > 0;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        
-    }
 
-    public int InsertRegistration(Registration registration)
-    {
-        try
+        public async Task<int> InsertRegistration(Registration registration)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = @"
-            INSERT INTO registrations (idEvents, idUsers, createdAt) 
-            VALUES (@idEvents, @idUsers, @createdAt);
-            SELECT LAST_INSERT_ID();"; // Fetch the last inserted ID
+                using (IDbConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = @"
+                        INSERT INTO registrations (idEvents, idUsers, createdAt) 
+                        VALUES (@idEvents, @idUsers, @createdAt);
+                        SELECT LAST_INSERT_ID();";
 
-                int id = connection.QuerySingle<int>(sql, registration); // Execute the query and get the ID
-                return id;
+                    int id = await connection.QuerySingleAsync<int>(sql, registration);
+                    return id;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
     }
-
 }

@@ -1,10 +1,14 @@
-﻿namespace EventPlanner.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public interface IRegistration
+namespace EventPlanner.Models
 {
-    Registration GetRegistrationById(int id);
-    List<Registration> GetAllRegistrations();
-    bool DeleteRegistration(int id);
-    bool UpdateRegistration(Registration registration);
-    int InsertRegistration(Registration registration);
+    public interface IRegistration
+    {
+        Task<Registration> GetRegistrationById(int id);
+        Task<List<Registration>> GetAllRegistrations();
+        Task<bool> DeleteRegistration(int id);
+        Task<bool> UpdateRegistration(Registration registration);
+        Task<int> InsertRegistration(Registration registration);
+    }
 }

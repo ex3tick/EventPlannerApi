@@ -1,39 +1,44 @@
-﻿using EventPlanner.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using EventPlanner.Models;
 using EventPlanner.SqlDal;
+using Microsoft.Extensions.Configuration;
 
-namespace EventPlanner.Services;
-
-public class RegistrationServices
+namespace EventPlanner.Services
 {
-     private readonly  IRegistration _dal;
-     
-     
-     public RegistrationServices(IConfiguration configuration)
-     {
-         string _con = configuration.GetConnectionString("DefaultConnection");
-         _dal = new RegistrationDal(_con);
-     }
-     
-     
-        public Registration GetRegistrationById(int id)
+    public class RegistrationServices
+    {
+        private readonly IRegistration _dal;
+
+        public RegistrationServices(IConfiguration configuration)
         {
-            return _dal.GetRegistrationById(id);
+            string _con = configuration.GetConnectionString("DefaultConnection");
+            _dal = new RegistrationDal(_con);
         }
-        public List<Registration> GetAllRegistrations()
+
+        public async Task<Registration> GetRegistrationById(int id)
         {
-            return _dal.GetAllRegistrations();
+            return await _dal.GetRegistrationById(id);
         }
-        public bool DeleteRegistration(int id)
+
+        public async Task<List<Registration>> GetAllRegistrations()
         {
-            return _dal.DeleteRegistration(id);
+            return await _dal.GetAllRegistrations();
         }
-        public bool UpdateRegistration(Registration registration)
+
+        public async Task<bool> DeleteRegistration(int id)
         {
-            return _dal.UpdateRegistration(registration);
+            return await _dal.DeleteRegistration(id);
         }
-        public int InsertRegistration(Registration registration)
+
+        public async Task<bool> UpdateRegistration(Registration registration)
         {
-            return _dal.InsertRegistration(registration);
+            return await _dal.UpdateRegistration(registration);
         }
-        
+
+        public async Task<int> InsertRegistration(Registration registration)
+        {
+            return await _dal.InsertRegistration(registration);
+        }
+    }
 }

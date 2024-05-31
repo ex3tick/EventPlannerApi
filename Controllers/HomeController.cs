@@ -138,37 +138,41 @@ public class
     #region RegistrationRest
     [HttpGet]
     [Route("/api/Registration/AllRegistrations")]
-    public IActionResult GetAllRegistrations()
+    public async Task<IActionResult> GetAllRegistrations()
     {
-        var registrations = _registrationServices.GetAllRegistrations();
-        return Json(registrations);
+        var registrations = await _registrationServices.GetAllRegistrations();
+        return Ok(registrations);
     }
+
     [HttpGet]
     [Route("/api/Registration/GetRegistrationById")]
-    public IActionResult GetRegistrationById([FromQuery] int id)
+    public async Task<IActionResult> GetRegistrationById([FromQuery] int id)
     {
-        var registrations = _registrationServices.GetRegistrationById(id);
-        return Json(registrations);
+        var registration = await _registrationServices.GetRegistrationById(id);
+        return Json(registration);
     }
+
     [HttpPost]
     [Route("/api/Registration/InsertRegistration")]
-    public IActionResult InsertRegistration([FromBody] Registration registration)
+    public async Task<IActionResult> InsertRegistration([FromBody] Registration registration)
     {
-        var id = _registrationServices.InsertRegistration(registration);
+        var id = await _registrationServices.InsertRegistration(registration);
         return Json(id);
     }
+
     [HttpPut]
     [Route("/api/Registration/UpdateRegistration")]
-    public IActionResult UpdateRegistration([FromBody] Registration registration)
+    public async Task<IActionResult> UpdateRegistration([FromBody] Registration registration)
     {
-        var result = _registrationServices.UpdateRegistration(registration);
+        var result = await _registrationServices.UpdateRegistration(registration);
         return Json(result);
     }
+
     [HttpDelete]
     [Route("/api/Registration/DeleteRegistration")]
-    public IActionResult DeleteRegistration([FromQuery] int id)
+    public async Task<IActionResult> DeleteRegistration([FromQuery] int id)
     {
-        var result = _registrationServices.DeleteRegistration(id);
+        var result = await _registrationServices.DeleteRegistration(id);
         return Json(result);
     }
      #endregion
