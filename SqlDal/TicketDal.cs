@@ -1,128 +1,130 @@
 ﻿using Dapper;
 using EventPlanner.Models;
 using MySql.Data.MySqlClient;
+using System.Threading.Tasks;
 
-namespace EventPlanner.SqlDal;
-
-public class TicketDal : ITicket
+namespace EventPlanner.SqlDal
 {
-    private readonly string _con;
-
-    public TicketDal(string con)
+    public class TicketDal : ITicket
     {
-        _con = con;
-    }
+        private readonly string _con;
 
-    public Ticket GetTicketById(int id)
-    {
-        try
+        public TicketDal(string con)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            _con = con;
+        }
+
+        public async Task<Ticket> GetTicketByIdAsync(int id)
+        {
+            try
             {
-                string sql = "SELECT * FROM tickets WHERE id = @id";
-                Ticket ticket = connection.QueryFirstOrDefault<Ticket>(sql, new { id = id });
-                return ticket;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM tickets WHERE id = @id";
+                    Ticket ticket = await connection.QueryFirstOrDefaultAsync<Ticket>(sql, new { id = id });
+                    return ticket;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
-    public List<Ticket> GetAllTickets()
-    {
-        try
+        public async Task<List<Ticket>> GetAllTicketsAsync()
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = "SELECT * FROM tickets";
-                List<Ticket> tickets = connection.Query<Ticket>(sql).ToList();
-                return tickets;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM tickets";
+                    List<Ticket> tickets = (await connection.QueryAsync<Ticket>(sql)).ToList();
+                    return tickets;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
-    public bool DeleteTicket(int id)
-    {
-        try
+        public async Task<bool> DeleteTicketAsync(int id)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = "DELETE FROM tickets WHERE id = @id";
-                int result = connection.Execute(sql, new { id = id });
-                return result > 0;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "DELETE FROM tickets WHERE id = @id";
+                    int result = await connection.ExecuteAsync(sql, new { id = id });
+                    return result > 0;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
-    public bool UpdateTicket(Ticket ticket)
-    {
-        try
+        public async Task<bool> UpdateTicketAsync(Ticket ticket)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql =
-                    "UPDATE tickets SET idEvents = @IdEvents,cost = @Cost,createdAt = @CreatedAt WHERE id = @Id";
-                int result = connection.Execute(sql, ticket);
-                return result > 0;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql =
+                        "UPDATE tickets SET idEvents = @IdEvents, cost = @Cost, createdAt = @CreatedAt WHERE id = @Id";
+                    int result = await connection.ExecuteAsync(sql, ticket);
+                    return result > 0;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
-    public int InsertTicket(Ticket ticket)
-    {
-        try
+        public async Task<int> InsertTicketAsync(Ticket ticket)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = @"
-            INSERT INTO tickets (idEvents, cost, createdAt) 
-            VALUES (@IdEvents, @Cost, @CreatedAt);
-            SELECT LAST_INSERT_ID();"; 
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = @"
+                    INSERT INTO tickets (idEvents, cost, createdAt) 
+                    VALUES (@IdEvents, @Cost, @CreatedAt);
+                    SELECT LAST_INSERT_ID();";
 
-                int id = connection.QuerySingle<int>(sql, ticket); 
-                return id;
+                    int id = await connection.QuerySingleAsync<int>(sql, ticket);
+                    return id;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
 
-    public List<Ticket> GetTicketsByEventId(int id)
-    {
-        try
+        public async Task<List<Ticket>> GetTicketsByEventIdAsync(int id)
         {
-            using (MySqlConnection connection = new MySqlConnection(_con))
+            try
             {
-                string sql = "SELECT * FROM tickets WHERE idEvents = @id";
-                List<Ticket> tickets = connection.Query<Ticket>(sql, new { id = id }).ToList();
-                return tickets;
+                using (MySqlConnection connection = new MySqlConnection(_con))
+                {
+                    string sql = "SELECT * FROM tickets WHERE idEvents = @id";
+                    List<Ticket> tickets = (await connection.QueryAsync<Ticket>(sql, new { id = id })).ToList();
+                    return tickets;
+                }
             }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

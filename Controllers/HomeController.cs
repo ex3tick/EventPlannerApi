@@ -180,48 +180,51 @@ public class
     #region TicketRest
     [HttpGet]
     [Route("/api/Ticket/AllTickets")]
-    public IActionResult GetAllTickets()
+    public async Task<IActionResult> GetAllTickets()
     {
-        var tickets = _ticketServices.GetAllTickets();
+        var tickets = await _ticketServices.GetAllTicketsAsync();
         return Json(tickets);
     }
+
     [HttpGet]
     [Route("/api/Ticket/GetTicketById")]
-    public IActionResult GetTicketById([FromQuery] int id)
+    public async Task<IActionResult> GetTicketById([FromQuery] int id)
     {
-        var tickets = _ticketServices.GetTicketById(id);
-        return Json(tickets);
+        var ticket = await _ticketServices.GetTicketByIdAsync(id);
+        return Json(ticket);
     }
+
     [HttpPost]
     [Route("/api/Ticket/InsertTicket")]
-    public IActionResult InsertTicket([FromBody] Ticket ticket)
+    public async Task<IActionResult> InsertTicket([FromBody] Ticket ticket)
     {
-        var id = _ticketServices.InsertTicket(ticket);
+        var id = await _ticketServices.InsertTicketAsync(ticket);
         return Json(id);
     }
+
     [HttpPut]
     [Route("/api/Ticket/UpdateTicket")]
-    public IActionResult UpdateTicket([FromBody] Ticket ticket)
+    public async Task<IActionResult> UpdateTicket([FromBody] Ticket ticket)
     {
-        var result = _ticketServices.UpdateTicket(ticket);
+        var result = await _ticketServices.UpdateTicketAsync(ticket);
         return Json(result);
     }
+
     [HttpDelete]
     [Route("/api/Ticket/DeleteTicket")]
-    public IActionResult DeleteTicket([FromQuery] int id)
+    public async Task<IActionResult> DeleteTicket([FromQuery] int id)
     {
-        var result = _ticketServices.DeleteTicket(id);
+        var result = await _ticketServices.DeleteTicketAsync(id);
         return Json(result);
     }
-      
+
     [HttpGet]
     [Route("/api/Ticket/GetTicketsByEventId")]
-    public IActionResult GetTicketsByEventId([FromQuery] int id)
+    public async Task<IActionResult> GetTicketsByEventId([FromQuery] int id)
     {
-        var tickets = _ticketServices.GetTicketsByEventId(id);
+        var tickets = await _ticketServices.GetTicketsByEventIdAsync(id);
         return Json(tickets);
     }
-    
     #endregion
     
     

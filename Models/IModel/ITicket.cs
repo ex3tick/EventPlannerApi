@@ -1,13 +1,15 @@
-﻿namespace EventPlanner.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public interface ITicket
+namespace EventPlanner.Models
 {
-    Ticket GetTicketById(int id);
-    List<Ticket> GetAllTickets();
-    bool DeleteTicket(int id);
-    bool UpdateTicket(Ticket ticket);
-    int InsertTicket(Ticket ticket);
-    List<Ticket> GetTicketsByEventId(int id);
-      
-    
+    public interface ITicket
+    {
+        Task<Ticket> GetTicketByIdAsync(int id);
+        Task<List<Ticket>> GetAllTicketsAsync();
+        Task<bool> DeleteTicketAsync(int id);
+        Task<bool> UpdateTicketAsync(Ticket ticket);
+        Task<int> InsertTicketAsync(Ticket ticket);
+        Task<List<Ticket>> GetTicketsByEventIdAsync(int id);
+    }
 }
